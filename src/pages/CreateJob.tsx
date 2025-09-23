@@ -1,28 +1,23 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Users, Save, Zap, X } from 'lucide-react';
+import { FileText, Plus } from 'lucide-react';
+import { sendJobToN8N } from '../utils/webhookService';
 
 const CreateJob = () => {
   const navigate = useNavigate();
   const [jobTitle, setJobTitle] = useState('');
-  const [location, setLocation] = useState('');
-  const [experienceRequired, setExperienceRequired] = useState('');
+  const [hiringManager, setHiringManager] = useState('');
+  const [status, setStatus] = useState<'open' | 'closed' | 'draft'>('draft');
+  const [closingDate, setClosingDate] = useState('');
   const [jobDescription, setJobDescription] = useState<File | null>(null);
-  const [resumes, setResumes] = useState<File[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState('');
 
   const jobDescriptionRef = useRef<HTMLInputElement>(null);
-  const resumesRef = useRef<HTMLInputElement>(null);
 
   const handleJobDescriptionUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setJobDescription(e.target.files[0]);
-    }
-  };
-
-  const handleResumesUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setResumes(Array.from(e.target.files));
     }
   };
 
@@ -37,31 +32,34 @@ const CreateJob = () => {
     }
   };
 
-  const handleResumesDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    if (e.dataTransfer.files) {
-      setResumes(Array.from(e.dataTransfer.files));
+  const handleCreateJob = async () => {
+    if (!jobDescription) return;
+
+    setIsCreating(true);
+    setError('');
+
+    try {
+      const jobData = {
+        jobTitle,
+        hiringManager,
+        status,
+        closingDate,
+      };
+
+      // Send data to n8n webhook
+      await sendJobToN8N(jobData, jobDescription);
+
+      // Generate job ID and navigate
+      const newJobId = Math.random().toString(36).substr(2, 9);
+      navigate(`/jobs/${newJobId}`);
+    } catch (error) {
+      console.error('Failed to create job:', error);
+      setError('Failed to create job. Please try again.');
+    } finally {
+      setIsCreating(false);
     }
   };
 
-  const removeResume = (index: number) => {
-    setResumes(resumes.filter((_, i) => i !== index));
-  };
-
-  const handleRunRanking = async () => {
-    setIsProcessing(true);
-
-    // Simulate processing
-    setTimeout(() => {
-      setIsProcessing(false);
-      navigate('/jobs/1'); // Navigate to mock job dashboard
-    }, 3000);
-  };
-
-  const handleSaveDraft = () => {
-    // Save as draft logic
-    navigate('/dashboard');
-  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -92,35 +90,44 @@ const CreateJob = () => {
               />
             </div>
             <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-                Location
+              <label htmlFor="hiringManager" className="block text-sm font-medium text-gray-700 mb-2">
+                Hiring Manager
               </label>
               <input
                 type="text"
-                id="location"
+                id="hiringManager"
                 className="input"
-                placeholder="e.g., San Francisco, CA / Remote"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g., Sarah Chen"
+                value={hiringManager}
+                onChange={(e) => setHiringManager(e.target.value)}
               />
             </div>
-            <div className="md:col-span-2">
-              <label htmlFor="experience" className="block text-sm font-medium text-gray-700 mb-2">
-                Years of Experience Required
+            <div>
+              <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
+                Status
               </label>
               <select
-                id="experience"
+                id="status"
                 className="input"
-                value={experienceRequired}
-                onChange={(e) => setExperienceRequired(e.target.value)}
+                value={status}
+                onChange={(e) => setStatus(e.target.value as 'open' | 'closed' | 'draft')}
               >
-                <option value="">Select experience level</option>
-                <option value="0-1">0-1 years (Entry Level)</option>
-                <option value="2-3">2-3 years (Junior)</option>
-                <option value="4-6">4-6 years (Mid Level)</option>
-                <option value="7-10">7-10 years (Senior)</option>
-                <option value="10+">10+ years (Lead/Principal)</option>
+                <option value="draft">Draft</option>
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
               </select>
+            </div>
+            <div>
+              <label htmlFor="closingDate" className="block text-sm font-medium text-gray-700 mb-2">
+                Closing Date
+              </label>
+              <input
+                type="date"
+                id="closingDate"
+                className="input"
+                value={closingDate}
+                onChange={(e) => setClosingDate(e.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -165,102 +172,34 @@ const CreateJob = () => {
               onChange={handleJobDescriptionUpload}
             />
           </div>
-        </div>
 
-        {/* Resumes Upload */}
-        <div className="card p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Candidate Resumes</h2>
-          <div
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors"
-            onDragOver={handleDragOver}
-            onDrop={handleResumesDrop}
-          >
-            <Users className="mx-auto h-12 w-12 text-gray-400" />
-            <div className="mt-4">
-              <p className="text-sm text-gray-600">
-                {resumes.length > 0 ? (
-                  <span className="text-primary-600 font-medium">
-                    {resumes.length} resume{resumes.length !== 1 ? 's' : ''} selected
-                  </span>
-                ) : (
-                  <>
-                    Drag and drop resumes here, or{' '}
-                    <button
-                      type="button"
-                      className="text-primary-600 hover:text-primary-500"
-                      onClick={() => resumesRef.current?.click()}
-                    >
-                      browse
-                    </button>
-                  </>
-                )}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                Multiple PDF, DOC, DOCX files up to 10MB each
-              </p>
-            </div>
-            <input
-              ref={resumesRef}
-              type="file"
-              className="hidden"
-              accept=".pdf,.doc,.docx"
-              multiple
-              onChange={handleResumesUpload}
-            />
-          </div>
-
-          {/* Resume List */}
-          {resumes.length > 0 && (
-            <div className="mt-4 space-y-2">
-              <h3 className="text-sm font-medium text-gray-700">Uploaded Resumes:</h3>
-              <div className="space-y-2">
-                {resumes.map((resume, index) => (
-                  <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                    <div className="flex items-center">
-                      <FileText className="h-5 w-5 text-gray-400 mr-3" />
-                      <span className="text-sm text-gray-900">{resume.name}</span>
-                    </div>
-                    <button
-                      onClick={() => removeResume(index)}
-                      className="text-gray-400 hover:text-red-500 transition-colors"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
+          {/* Create Job Button */}
+          <div className="mt-6 flex flex-col items-center">
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                {error}
               </div>
-            </div>
-          )}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-between">
-          <button
-            onClick={handleSaveDraft}
-            className="btn btn-secondary btn-lg"
-          >
-            <Save className="w-5 h-5 mr-2" />
-            Save Draft
-          </button>
-
-          <button
-            onClick={handleRunRanking}
-            disabled={!jobDescription || resumes.length === 0 || isProcessing}
-            className="btn btn-primary btn-lg"
-          >
-            {isProcessing ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Processing...
-              </>
-            ) : (
-              <>
-                <Zap className="w-5 h-5 mr-2" />
-                Run Resume Ranking
-              </>
             )}
-          </button>
+            <button
+              onClick={handleCreateJob}
+              disabled={!jobTitle.trim() || !hiringManager.trim() || !jobDescription || isCreating}
+              className="btn btn-primary btn-lg"
+            >
+              {isCreating ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Creating Job...
+                </>
+              ) : (
+                <>
+                  <Plus className="w-5 h-5 mr-2" />
+                  Create Job
+                </>
+              )}
+            </button>
+          </div>
         </div>
+
       </div>
     </div>
   );
