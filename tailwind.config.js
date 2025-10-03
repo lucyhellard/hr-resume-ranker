@@ -15,12 +15,12 @@ export default {
           700: '#1d4ed8',
         },
         yellow: {
-          50: '#fefce8',
-          100: '#fef9c3',
-          200: '#fef08a',
-          500: '#eab308',
-          600: '#ca8a04',
-          700: '#a16207',
+          50: '#fffef0',
+          100: '#fffce0',
+          200: '#fff9c2',
+          500: '#FFDD33',
+          600: '#e6c62e',
+          700: '#ccaf29',
         },
         success: {
           50: '#f0fdf4',
