@@ -30,7 +30,12 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 flex items-center space-x-3">
+                <img
+                  src="https://storage.googleapis.com/msgsndr/lGsIinSfGWCV7pg4A0Wx/media/68dfc8ca0ee850516ff681a5.png"
+                  alt="Logo"
+                  className="h-8 w-8"
+                />
                 <h1 className="text-xl font-bold text-primary-600">HR Resume Ranker</h1>
               </div>
               <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
