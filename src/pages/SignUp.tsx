@@ -1,26 +1,44 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Lock, Eye, EyeOff } from 'lucide-react';
+import { User, Eye, EyeOff } from 'lucide-react';
 import { authService } from '../services/authService';
 
-const Login = () => {
+const SignUp = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
     setIsLoading(true);
     setError('');
 
     try {
-      await authService.signIn(email, password);
-      navigate('/dashboard');
+      await authService.signUp(formData.email, formData.password, formData.name);
+      // You might want to show a success message or redirect to login
+      navigate('/login', {
+        state: { message: 'Account created successfully! Please check your email to verify your account.' }
+      });
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
+      setError(err.message || 'Failed to create account');
     } finally {
       setIsLoading(false);
     }
@@ -34,10 +52,10 @@ const Login = () => {
             <User className="h-6 w-6 text-white" />
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Welcome to HR Resume Ranker
+            Create your account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Your AI co-pilot for faster, fairer hiring.
+            Join HR Resume Ranker and streamline your hiring process
           </p>
         </div>
 
@@ -50,10 +68,28 @@ const Login = () => {
 
           <div className="space-y-4">
             <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                Full Name
+              </label>
+              <div className="mt-1">
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  className="input"
+                  placeholder="Enter your full name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email Address
               </label>
-              <div className="mt-1 relative">
+              <div className="mt-1">
                 <input
                   id="email"
                   name="email"
@@ -62,10 +98,9 @@ const Login = () => {
                   required
                   className="input"
                   placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
-                <User className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
               </div>
             </div>
 
@@ -78,12 +113,12 @@ const Login = () => {
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                   className="input pr-10"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Create a password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
                 <button
                   type="button"
@@ -97,59 +132,55 @@ const Login = () => {
                   )}
                 </button>
               </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Must be at least 6 characters
+              </p>
             </div>
-          </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                Confirm Password
               </label>
-            </div>
-
-            <div className="text-sm">
-              <button
-                type="button"
-                className="font-medium text-primary-600 hover:text-primary-500"
-              >
-                Forgot password?
-              </button>
+              <div className="mt-1">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  className="input"
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                />
+              </div>
             </div>
           </div>
 
           <div>
             <button
               type="submit"
-              disabled={isLoading || !email || !password}
+              disabled={isLoading || !formData.name || !formData.email || !formData.password || !formData.confirmPassword}
               className="btn btn-primary btn-lg w-full"
             >
               {isLoading ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Signing in...
+                  Creating account...
                 </div>
               ) : (
-                <>
-                  <Lock className="w-4 h-4 mr-2" />
-                  Login
-                </>
+                'Create Account'
               )}
             </button>
           </div>
 
           <div className="text-center text-sm text-gray-600">
-            Don't have an account?{' '}
+            Already have an account?{' '}
             <Link
-              to="/signup"
+              to="/login"
               className="font-medium text-primary-600 hover:text-primary-500"
             >
-              Sign up here
+              Sign in here
             </Link>
           </div>
         </form>
@@ -158,4 +189,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

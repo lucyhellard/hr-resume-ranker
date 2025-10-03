@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Plus } from 'lucide-react';
 import { sendJobToN8N } from '../utils/webhookService';
+import { createJob } from '../services/jobService';
 
 const CreateJob = () => {
   const navigate = useNavigate();
@@ -46,15 +47,47 @@ const CreateJob = () => {
         closingDate,
       };
 
-      // Send data to n8n webhook
-      await sendJobToN8N(jobData, jobDescription);
+      console.log('Starting job creation with data:', jobData);
 
-      // Generate job ID and navigate
-      const newJobId = Math.random().toString(36).substr(2, 9);
-      navigate(`/jobs/${newJobId}`);
+      let jobId;
+
+      // Try webhook first - let it handle job creation
+      try {
+        console.log('Sending to webhook...');
+        const webhookResponse = await sendJobToN8N(jobData, jobDescription);
+        console.log('Webhook response:', webhookResponse);
+
+        if (webhookResponse?.jobId) {
+          jobId = webhookResponse.jobId;
+          console.log('Using job ID from webhook:', jobId);
+        } else {
+          throw new Error('Webhook did not return a job ID');
+        }
+      } catch (webhookError) {
+        console.warn('Webhook failed, creating local fallback job:', webhookError);
+
+        // Fallback: create job locally
+        const localJob = await createJob({
+          title: jobTitle,
+          hiringManager,
+          status,
+          closingDate,
+        });
+
+        jobId = localJob.id;
+        console.log('Created local fallback job with ID:', jobId);
+      }
+
+
+      // Navigate using the webhook job ID (this ensures consistency)
+      navigate(`/jobs/${jobId}`);
     } catch (error) {
-      console.error('Failed to create job:', error);
-      setError('Failed to create job. Please try again.');
+      console.error('Failed to create job - detailed error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorStack = error instanceof Error ? error.stack : 'No stack trace available';
+      console.error('Error message:', errorMessage);
+      console.error('Error stack:', errorStack);
+      setError(`Failed to create job: ${errorMessage}. Please try again.`);
     } finally {
       setIsCreating(false);
     }

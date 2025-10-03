@@ -25,11 +25,11 @@ const ResultsDashboard = () => {
       name: 'Emily Chen',
       email: 'emily.chen@email.com',
       location: 'San Francisco, CA',
-      jobId: '1',
+      jobId: '550e8400-e29b-41d4-a716-446655440000',
       scores: { jobMatch: 92, experience: 88, skills: 95, culture: 85, education: 90, achievements: 87, overall: 89 },
       strengths: ['React expertise', 'Leadership experience'],
       gaps: ['Angular experience'],
-      skills: { required: ['React', 'TypeScript'], actual: ['React', 'TypeScript'] },
+      skills_breakdown: { required: ['React', 'TypeScript'], actual: ['React', 'TypeScript'] },
       status: 'shortlisted',
       createdAt: new Date('2024-01-15')
     },
@@ -38,11 +38,11 @@ const ResultsDashboard = () => {
       name: 'Michael Rodriguez',
       email: 'michael.r@email.com',
       location: 'Austin, TX',
-      jobId: '1',
+      jobId: '550e8400-e29b-41d4-a716-446655440000',
       scores: { jobMatch: 85, experience: 82, skills: 88, culture: 79, education: 85, achievements: 80, overall: 83 },
       strengths: ['Full-stack development', 'Team leadership'],
       gaps: ['GraphQL experience'],
-      skills: { required: ['React', 'TypeScript'], actual: ['React', 'TypeScript'] },
+      skills_breakdown: { required: ['React', 'TypeScript'], actual: ['React', 'TypeScript'] },
       status: 'applied',
       createdAt: new Date('2024-01-16')
     },
@@ -51,11 +51,11 @@ const ResultsDashboard = () => {
       name: 'Sarah Kim',
       email: 'sarah.kim@email.com',
       location: 'Seattle, WA',
-      jobId: '1',
+      jobId: '550e8400-e29b-41d4-a716-446655440000',
       scores: { jobMatch: 78, experience: 75, skills: 82, culture: 88, education: 92, achievements: 74, overall: 82 },
       strengths: ['Strong CS fundamentals', 'Cultural fit'],
       gaps: ['Senior level experience'],
-      skills: { required: ['React', 'TypeScript'], actual: ['React', 'JavaScript'] },
+      skills_breakdown: { required: ['React', 'TypeScript'], actual: ['React', 'JavaScript'] },
       status: 'applied',
       createdAt: new Date('2024-01-17')
     }
@@ -75,7 +75,7 @@ const ResultsDashboard = () => {
   };
 
   const topCandidates = candidates
-    .sort((a, b) => b.scores.overall - a.scores.overall)
+    .sort((a, b) => parseFloat(b.scores.overall.toString() || '0') - parseFloat(a.scores.overall.toString() || '0'))
     .slice(0, 3);
 
   const displayName = (candidate: Candidate) => {
@@ -178,13 +178,13 @@ const ResultsDashboard = () => {
               <div className="flex items-center justify-between mb-3">
                 <h4 className="font-semibold text-gray-900">{displayName(candidate)}</h4>
                 <div className={`w-4 h-4 rounded-full ${
-                  candidate.scores.overall >= 85 ? 'bg-success-500' :
-                  candidate.scores.overall >= 70 ? 'bg-warning-500' : 'bg-danger-500'
+                  parseFloat(candidate.scores.overall.toString() || '0') >= 85 ? 'bg-success-500' :
+                  parseFloat(candidate.scores.overall.toString() || '0') >= 70 ? 'bg-warning-500' : 'bg-danger-500'
                 }`}></div>
               </div>
 
               <div className="text-2xl font-bold text-center mb-2">
-                {formatScore(candidate.scores.overall)}
+                {formatScore(parseFloat(candidate.scores.overall.toString() || '0'))}
               </div>
 
               <div className={`text-center text-xs font-medium px-2 py-1 rounded-full ${
@@ -197,23 +197,23 @@ const ResultsDashboard = () => {
 
               <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
                 <div className="text-center">
-                  <div className={`font-medium ${getScoreColorClass(candidate.scores.skills).includes('green') ? 'text-success-600' :
-                    getScoreColorClass(candidate.scores.skills).includes('yellow') ? 'text-warning-600' : 'text-danger-600'}`}>
-                    {formatScore(candidate.scores.skills)}
+                  <div className={`font-medium ${getScoreColorClass(parseFloat(candidate.scores.skills.toString() || '0')).includes('green') ? 'text-success-600' :
+                    getScoreColorClass(parseFloat(candidate.scores.skills.toString() || '0')).includes('yellow') ? 'text-warning-600' : 'text-danger-600'}`}>
+                    {formatScore(parseFloat(candidate.scores.skills.toString() || '0'))}
                   </div>
                   <div className="text-gray-500">Skills</div>
                 </div>
                 <div className="text-center">
-                  <div className={`font-medium ${getScoreColorClass(candidate.scores.experience).includes('green') ? 'text-success-600' :
-                    getScoreColorClass(candidate.scores.experience).includes('yellow') ? 'text-warning-600' : 'text-danger-600'}`}>
-                    {formatScore(candidate.scores.experience)}
+                  <div className={`font-medium ${getScoreColorClass(parseFloat(candidate.scores.experience.toString() || '0')).includes('green') ? 'text-success-600' :
+                    getScoreColorClass(parseFloat(candidate.scores.experience.toString() || '0')).includes('yellow') ? 'text-warning-600' : 'text-danger-600'}`}>
+                    {formatScore(parseFloat(candidate.scores.experience.toString() || '0'))}
                   </div>
                   <div className="text-gray-500">Exp</div>
                 </div>
                 <div className="text-center">
-                  <div className={`font-medium ${getScoreColorClass(candidate.scores.culture).includes('green') ? 'text-success-600' :
-                    getScoreColorClass(candidate.scores.culture).includes('yellow') ? 'text-warning-600' : 'text-danger-600'}`}>
-                    {formatScore(candidate.scores.culture)}
+                  <div className={`font-medium ${getScoreColorClass(parseFloat(candidate.scores.culture.toString() || '0')).includes('green') ? 'text-success-600' :
+                    getScoreColorClass(parseFloat(candidate.scores.culture.toString() || '0')).includes('yellow') ? 'text-warning-600' : 'text-danger-600'}`}>
+                    {formatScore(parseFloat(candidate.scores.culture.toString() || '0'))}
                   </div>
                   <div className="text-gray-500">Culture</div>
                 </div>
@@ -241,15 +241,15 @@ const ResultsDashboard = () => {
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span>Overall Score</span>
-                      <span className="font-bold">{formatScore(candidate.scores.overall)}</span>
+                      <span className="font-bold">{formatScore(parseFloat(candidate.scores.overall.toString() || '0'))}</span>
                     </div>
                     <div className="h-2 bg-gray-200 rounded-full">
                       <div
                         className={`h-full rounded-full ${
-                          candidate.scores.overall >= 85 ? 'bg-success-500' :
-                          candidate.scores.overall >= 70 ? 'bg-warning-500' : 'bg-danger-500'
+                          parseFloat(candidate.scores.overall.toString() || '0') >= 85 ? 'bg-success-500' :
+                          parseFloat(candidate.scores.overall.toString() || '0') >= 70 ? 'bg-warning-500' : 'bg-danger-500'
                         }`}
-                        style={{ width: `${candidate.scores.overall}%` }}
+                        style={{ width: `${parseFloat(candidate.scores.overall.toString() || '0')}%` }}
                       ></div>
                     </div>
                   </div>
@@ -257,19 +257,19 @@ const ResultsDashboard = () => {
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div>
                       <span className="text-gray-500">Skills:</span>
-                      <span className="ml-1 font-medium">{formatScore(candidate.scores.skills)}</span>
+                      <span className="ml-1 font-medium">{formatScore(parseFloat(candidate.scores.skills.toString() || '0'))}</span>
                     </div>
                     <div>
                       <span className="text-gray-500">Experience:</span>
-                      <span className="ml-1 font-medium">{formatScore(candidate.scores.experience)}</span>
+                      <span className="ml-1 font-medium">{formatScore(parseFloat(candidate.scores.experience.toString() || '0'))}</span>
                     </div>
                     <div>
                       <span className="text-gray-500">Culture:</span>
-                      <span className="ml-1 font-medium">{formatScore(candidate.scores.culture)}</span>
+                      <span className="ml-1 font-medium">{formatScore(parseFloat(candidate.scores.culture.toString() || '0'))}</span>
                     </div>
                     <div>
                       <span className="text-gray-500">Education:</span>
-                      <span className="ml-1 font-medium">{formatScore(candidate.scores.education)}</span>
+                      <span className="ml-1 font-medium">{formatScore(parseFloat(candidate.scores.education.toString() || '0'))}</span>
                     </div>
                   </div>
 

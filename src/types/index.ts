@@ -31,7 +31,7 @@ export interface Candidate {
   };
   strengths: string[];
   gaps: string[];
-  skills: {
+  skills_breakdown: {
     required: string[];
     actual: string[];
   };

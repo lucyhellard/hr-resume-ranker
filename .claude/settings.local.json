@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npm run build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nAdd comprehensive interview management and candidate tracking features\n\nMajor updates to JobDashboard with new Shortlisted and Interviews section:\n- Added scheduled interviews table with candidate tracking\n- Implemented shortlist email sent status tracking\n- Added interview booking status with visual indicators\n- Integrated interview link management with Join Interview button\n- Added time until interview countdown with UTC timezone handling\n- Implemented interview time display with proper formatting\n- Added Generate Interview Pack button with webhook integration\n- Added Advise Shortlisted Candidates button with email webhook\n- Updated all \"applicant\" terminology to \"candidate\" throughout\n- Added interview_time, interview_link, shortlist_email_sent, and interview_booked fields\n- Improved candidate filtering to show all shortlisted candidates\n- Enhanced UI with status badges (sent/not sent, booked/not booked)\n- Added interview pack URL tracking in job data\n- Implemented webhook service for shortlist emails and interview pack generation\n\nAdditional improvements:\n- Updated Job interface to include interview_pack_url\n- Enhanced Applicant interface with new interview-related fields\n- Improved date/time formatting for better readability\n- Added proper error handling for webhook responses\n- Updated button states and loading indicators\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

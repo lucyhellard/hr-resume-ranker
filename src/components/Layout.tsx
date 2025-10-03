@@ -1,24 +1,24 @@
 import { ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { User, LogOut, Briefcase, Users, FileText, BarChart3 } from 'lucide-react';
-import { User as UserType } from '../types';
+import { User, LogOut, Users, BarChart3 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 import { cn } from '../utils/cn';
 
 interface LayoutProps {
   children: ReactNode;
-  user: UserType;
-  onLogout: () => void;
 }
 
-const Layout = ({ children, user, onLogout }: LayoutProps) => {
+const Layout = ({ children }: LayoutProps) => {
+  const { userProfile, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Debug: log userProfile to see what we're getting
+  console.log('UserProfile in Layout:', userProfile);
+
   const navigationItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: BarChart3 },
-    { name: 'Jobs', path: '/dashboard', icon: Briefcase },
-    { name: 'Candidates', path: '/dashboard', icon: Users },
-    { name: 'Reports', path: '/reports', icon: FileText },
+    { name: 'Jobs Dashboard', path: '/dashboard', icon: BarChart3 },
+    { name: 'Candidates', path: '/candidates', icon: Users },
   ];
 
   return (
@@ -35,7 +35,8 @@ const Layout = ({ children, user, onLogout }: LayoutProps) => {
                 {navigationItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path ||
-                    (item.name === 'Jobs' && location.pathname.startsWith('/jobs'));
+                    (item.name === 'Jobs Dashboard' && location.pathname.startsWith('/jobs')) ||
+                    (item.name === 'Candidates' && location.pathname === '/candidates');
 
                   return (
                     <button
@@ -58,12 +59,12 @@ const Layout = ({ children, user, onLogout }: LayoutProps) => {
 
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-700">
-                Welcome, {user.name}
+                Welcome, {userProfile?.name?.split(' ')[0] || 'User'}
               </div>
               <div className="flex items-center space-x-2">
                 <User className="w-4 h-4 text-gray-400" />
                 <button
-                  onClick={onLogout}
+                  onClick={signOut}
                   className="text-gray-400 hover:text-gray-600 transition-colors"
                   title="Logout"
                 >
