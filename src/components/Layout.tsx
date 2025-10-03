@@ -34,7 +34,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <img
                   src={theme === 'yellow'
                     ? "https://storage.googleapis.com/msgsndr/lGsIinSfGWCV7pg4A0Wx/media/68dfc8ca0ee850516ff681a5.png"
-                    : "https://storage.googleapis.com/msgsndr/lGsIinSfGWCV7pg4A0Wx/media/68dd15503163a67514a5f1b7.png"
+                    : "https://storage.googleapis.com/msgsndr/lGsIinSfGWCV7pg4A0Wx/media/68dfcb7f3474f7389671fef5.png"
                   }
                   alt="Logo"
                   className="h-8 w-auto"
