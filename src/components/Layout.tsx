@@ -34,7 +34,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <img
                   src="https://storage.googleapis.com/msgsndr/lGsIinSfGWCV7pg4A0Wx/media/68dfc8ca0ee850516ff681a5.png"
                   alt="Logo"
-                  className="h-8 w-8"
+                  className="h-8 w-auto"
                 />
                 <h1 className="text-xl font-bold text-primary-600">HR Resume Ranker</h1>
               </div>
