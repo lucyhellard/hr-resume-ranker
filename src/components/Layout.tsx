@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { User, LogOut, Users, BarChart3 } from 'lucide-react';
+import { User, LogOut, Users, BarChart3, Palette } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { cn } from '../utils/cn';
 
 interface LayoutProps {
@@ -10,6 +11,7 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const { userProfile, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -62,6 +64,13 @@ const Layout = ({ children }: LayoutProps) => {
                 Welcome, {userProfile?.name?.split(' ')[0] || 'User'}
               </div>
               <div className="flex items-center space-x-2">
+                <button
+                  onClick={toggleTheme}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  title={`Switch to ${theme === 'blue' ? 'Yellow' : 'Blue'} theme`}
+                >
+                  <Palette className="w-4 h-4" />
+                </button>
                 <User className="w-4 h-4 text-gray-400" />
                 <button
                   onClick={signOut}

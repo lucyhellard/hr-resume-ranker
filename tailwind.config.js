@@ -14,6 +14,14 @@ export default {
           600: '#2563eb',
           700: '#1d4ed8',
         },
+        yellow: {
+          50: '#fefce8',
+          100: '#fef9c3',
+          200: '#fef08a',
+          500: '#eab308',
+          600: '#ca8a04',
+          700: '#a16207',
+        },
         success: {
           50: '#f0fdf4',
           100: '#dcfce7',

@@ -6,8 +6,34 @@
   * {
     @apply border-gray-200;
   }
+
   body {
     @apply bg-gray-50 text-gray-900;
+  }
+
+  /* Yellow theme */
+  [data-theme="yellow"] body {
+    @apply bg-yellow-50 text-gray-900;
+  }
+
+  [data-theme="yellow"] .card {
+    @apply bg-white border-yellow-200;
+  }
+
+  [data-theme="yellow"] nav {
+    @apply bg-white border-yellow-200;
+  }
+
+  [data-theme="yellow"] .text-primary-600 {
+    @apply text-yellow-600;
+  }
+
+  [data-theme="yellow"] .border-primary-500 {
+    @apply border-yellow-500;
+  }
+
+  [data-theme="yellow"] .text-primary-500 {
+    @apply text-yellow-600;
   }
 }
 
@@ -20,8 +46,16 @@
     @apply btn bg-primary-600 text-white hover:bg-primary-700;
   }
 
+  [data-theme="yellow"] .btn-primary {
+    @apply bg-yellow-500 text-black hover:bg-yellow-600;
+  }
+
   .btn-secondary {
     @apply btn bg-gray-100 text-gray-900 hover:bg-gray-200;
+  }
+
+  [data-theme="yellow"] .btn-secondary {
+    @apply bg-yellow-100 text-gray-900 hover:bg-yellow-200;
   }
 
   .btn-lg {
