@@ -30,8 +30,12 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 bg-primary-600 rounded-lg flex items-center justify-center">
-            <User className="h-6 w-6 text-white" />
+          <div className="mx-auto flex items-center justify-center">
+            <img
+              src="https://storage.googleapis.com/msgsndr/lGsIinSfGWCV7pg4A0Wx/media/68dfcb7f3474f7389671fef5.png"
+              alt="HR Resume Ranker Logo"
+              className="h-16 w-auto"
+            />
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
             Welcome to HR Resume Ranker
