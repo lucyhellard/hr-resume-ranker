@@ -16,14 +16,6 @@
     @apply bg-yellow-50 text-gray-900;
   }
 
-  [data-theme="yellow"] .card {
-    @apply bg-white border-yellow-200;
-  }
-
-  [data-theme="yellow"] nav {
-    @apply bg-white border-yellow-200;
-  }
-
   [data-theme="yellow"] .text-primary-600 {
     @apply text-yellow-600;
   }
