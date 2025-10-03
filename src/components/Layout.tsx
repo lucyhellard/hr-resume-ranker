@@ -32,7 +32,10 @@ const Layout = ({ children }: LayoutProps) => {
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center space-x-3">
                 <img
-                  src="https://storage.googleapis.com/msgsndr/lGsIinSfGWCV7pg4A0Wx/media/68dfc8ca0ee850516ff681a5.png"
+                  src={theme === 'yellow'
+                    ? "https://storage.googleapis.com/msgsndr/lGsIinSfGWCV7pg4A0Wx/media/68dfc8ca0ee850516ff681a5.png"
+                    : "https://storage.googleapis.com/msgsndr/lGsIinSfGWCV7pg4A0Wx/media/68dd15503163a67514a5f1b7.png"
+                  }
                   alt="Logo"
                   className="h-8 w-auto"
                 />
