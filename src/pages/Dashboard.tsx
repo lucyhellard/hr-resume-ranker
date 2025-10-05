@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Eye, Edit2, Trash2, Users, CheckCircle, Circle, AlertCircle } from 'lucide-react';
 // import { Job } from '../types';
-import { getJobs, Job as DatabaseJob } from '../services/jobService';
+import { getJobs, Job as DatabaseJob, deleteJob } from '../services/jobService';
 import { getApplicantsByJobId } from '../services/applicantService';
 
 interface JobWithCounts extends DatabaseJob {
@@ -93,6 +93,34 @@ const Dashboard = () => {
         return 'bg-warning-100 text-warning-700';
       default:
         return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const handleDeleteJob = async (job: JobWithCounts) => {
+    // Check if there are any applicants
+    if (job.realApplicantCount > 0) {
+      // Job has applicants - cannot delete
+      alert('This job cannot be deleted because it has applicants. Please close the job instead.');
+      return;
+    }
+
+    // No applicants - confirm deletion
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete the job "${job.title}"? This action cannot be undone.`
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    // Proceed with deletion
+    try {
+      await deleteJob(job.id);
+      // Remove job from state
+      setJobs(jobs.filter(j => j.id !== job.id));
+    } catch (error) {
+      console.error('Error deleting job:', error);
+      alert('Failed to delete job. Please try again.');
     }
   };
 
@@ -330,6 +358,7 @@ const Dashboard = () => {
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
+                        onClick={() => handleDeleteJob(job)}
                         className="text-red-600 hover:text-red-900 transition-colors"
                         title="Delete"
                       >
