@@ -44,7 +44,6 @@ export interface Applicant {
   interview_time?: string | null;
   interview_link?: string | null;
   shortlist_email_sent?: boolean | null;
-  interview_booked?: boolean | null;
 }
 
 export const getApplicantsByJobId = async (jobId: string): Promise<Applicant[]> => {

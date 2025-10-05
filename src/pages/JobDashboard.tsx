@@ -194,10 +194,10 @@ const JobDashboard = () => {
       console.log('Shortlisted candidates:', shortlisted);
       shortlisted.forEach(candidate => {
         console.log(`${candidate.name}:`, {
+          status: candidate.status,
           interview_time: candidate.interview_time,
           interview_link: candidate.interview_link,
-          shortlist_email_sent: candidate.shortlist_email_sent,
-          interview_booked: candidate.interview_booked
+          shortlist_email_sent: candidate.shortlist_email_sent
         });
       });
 
@@ -544,7 +544,7 @@ const JobDashboard = () => {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {applicant.interview_booked || applicant.interview_time ? (
+                        {applicant.interview_time ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 text-success-700">
                             <CheckCircle className="w-3 h-3 mr-1" />
                             Booked
