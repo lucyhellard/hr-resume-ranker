@@ -189,6 +189,18 @@ const JobDashboard = () => {
       console.log('New candidates count from API:', applicantData.length);
       console.log('New candidates data:', applicantData);
 
+      // Log shortlisted candidates with interview details
+      const shortlisted = applicantData.filter(a => a.status === 'shortlisted');
+      console.log('Shortlisted candidates:', shortlisted);
+      shortlisted.forEach(candidate => {
+        console.log(`${candidate.name}:`, {
+          interview_time: candidate.interview_time,
+          interview_link: candidate.interview_link,
+          shortlist_email_sent: candidate.shortlist_email_sent,
+          interview_booked: candidate.interview_booked
+        });
+      });
+
       setJobData(job);
       setApplicants(applicantData);
       setLastRefreshTime(new Date().toLocaleTimeString());
