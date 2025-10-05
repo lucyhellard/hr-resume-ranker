@@ -7,19 +7,12 @@ import { getApplicantsByJobId, Applicant } from '../services/applicantService';
 import { generateInterviewPack, sendShortlistEmail } from '../utils/webhookService';
 
 const getTimeUntilInterview = (interviewTime: string): string => {
-  // Get current time in UTC
   const now = new Date();
-  const nowUtc = Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-    now.getUTCHours(),
-    now.getUTCMinutes(),
-    now.getUTCSeconds()
-  );
-
   const interview = new Date(interviewTime);
-  const diffMs = interview.getTime() - nowUtc;
+
+  // Subtract 10 hours (AEST offset) since interview times are stored in AEST but marked as UTC
+  const adjustedInterview = new Date(interview.getTime() - (10 * 60 * 60 * 1000));
+  const diffMs = adjustedInterview.getTime() - now.getTime();
 
   if (diffMs < 0) {
     return 'Past';
